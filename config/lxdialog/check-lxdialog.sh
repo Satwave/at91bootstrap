@@ -45,8 +45,9 @@ trap "rm -f $tmp" 0 1 2 3 15
 
 # Check if we can link to ncurses
 check() {
-        $cc -x c - -o $tmp 2>/dev/null <<'EOF'
-#include CURSES_LOC
+    pkg_flags=$(pkg-config --cflags ncurses)
+    $cc $(pkg-config --cflags ncurses) -x c - -o $tmp <<'EOF'
+#include <ncurses.h>
 int main() {}
 EOF
 	if [ $? != 0 ]; then
