@@ -10,8 +10,8 @@ disk_file=$(mount | awk '/^\/dev\/disk/ && /(msdos|exfat)/ {print $1}')
 disk_mount_point=$(mount | awk '/^\/dev\/disk/ && /(msdos|exfat)/ {print $3}')
 
 if [ -n "$disk_mount_point" -a -n "$disk_file" ]; then
-    echo "Writing $1 to $disk_mount_point/BUILD.bin"
-    cp "$1" "$disk_mount_point/BUILD.bin" && \
+    echo "Writing $1 to $disk_mount_point/BOOT.bin"
+    cp "$1" "$disk_mount_point/BOOT.bin" && \
     diskutil eject "$disk_file"
 else
     echo "Could not find disk file or mount point"
