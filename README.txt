@@ -33,6 +33,6 @@ to start it.
 
 3. Install pyserial and xmodem in your python env of choice
 
-4. Run `python load_binary.py <path to BUILD.bin>`
+4. Run `python load_binary.py /dev/<FTDI device> <path to BUILD.bin>`
 
 5. Should see "Wrote binary" if successful and ACU will automatically boot into the app

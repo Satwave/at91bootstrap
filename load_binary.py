@@ -4,16 +4,23 @@ import sys
 import os
 from xmodem import XMODEM
 
-serial_port = "/dev/cu.usbmodem112402"
-binary_file = sys.argv[1]
+serial_port = sys.argv[1]
+binary_file = sys.argv[2]
 RETRY_COUNT = 20
-# def putc(data, timeout=1):
-#     global ser
-#     return ser.write(data)
-# def getc(size, timeout=1):
-#     global ser
-#     return ser.read(size)
-# ser = serial.Serial(serial_port, baudrate=921600, timeout=0.5)
+
+if not os.path.exists(serial_port):
+    print(f"Serial device file: {serial_port} does not exist")
+    exit(-1)
+
+if not os.path.isfile(binary_file):
+    print(f"Binary file: {binary_file} does not exist")
+    exit(-1)
+
+with open(binary_file, 'rb') as fp:
+    if fp.read(4)[1:] == b"ELF":
+        print("Passed in binary is in ELF format. Binary needs to be in binary format")
+        exit(-1)
+
 with serial.Serial(serial_port, baudrate=921600, timeout=0.5) as ser:
 
     putc = lambda data, timeout=1, ser=ser: ser.write(data)
@@ -24,7 +31,6 @@ with serial.Serial(serial_port, baudrate=921600, timeout=0.5) as ser:
         ser.write(b'S')
         first_byte = ser.read(1)
         if first_byte == b'S':
-            ser.timeout = None
             break
         elif retry_counter >= RETRY_COUNT:
             print(f"Did not recive ack after {RETRY_COUNT} attempts")
