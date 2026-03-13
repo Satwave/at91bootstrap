@@ -10,7 +10,15 @@ context = zmq.Context()
 socket = context.socket(zmq.PAIR)
 
 socket.connect("tcp://192.168.5.83:5001")
-time.sleep(1)
+time.sleep(.1)
+
+
+start_bytes = bytearray([0xFA, 0xFB, 0xFC])
+socket.send(start_bytes)
+
+if(socket.recv() != bytes([0x02])):
+    print("Did not receive ack")
+    exit(-1)
 
 filepath = sys.argv[1]
 
