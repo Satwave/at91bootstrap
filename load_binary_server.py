@@ -16,7 +16,8 @@ if __name__ == "__main__":
 
     while True:
 
-        filename = socket.recv_string()
+        filename_bytes = socket.recv()
+        filename = bytes.decode(filename_bytes)
         print("filename recv", filename)
 
         filesize = int.from_bytes(socket.recv(), byteorder='big')
@@ -34,4 +35,8 @@ if __name__ == "__main__":
                 f.write(packet)
 
 
-        acu_instance.load(filename)
+        resp = acu_instance.load(filename)
+        if resp == 0:
+            socket.send(bytes([0]))
+        else:
+            socket.send(bytes([1]))

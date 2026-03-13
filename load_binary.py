@@ -26,7 +26,7 @@ class binaryLoad:
                     break
                 elif retry_counter >= self.RETRY_COUNT:
                     print(f"Did not recive ack after {self.RETRY_COUNT} attempts")
-                    exit(-1)
+                    return -1
                 else:
                     retry_counter += 1
 
@@ -36,7 +36,7 @@ class binaryLoad:
             if ser.read(4) != binary_size_packed:
                 print("Size did not match")
                 ser.write(bytes([0]))
-                exit(-1)
+                return -1
 
             ser.write(bytes([69]))
             modem = XMODEM(getc, putc, mode="xmodem1k")
@@ -44,6 +44,9 @@ class binaryLoad:
                 print(f"Sending {binary_file} size {binary_size}")
                 modem.send(fh)
                 print("Wrote binary")
+                return 0
+        
+        return -1
 
 
 if __name__ == "__main__":

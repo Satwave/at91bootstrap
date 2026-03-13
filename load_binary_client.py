@@ -18,7 +18,8 @@ timestamp = os.path.getmtime(filepath)
 time_str = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d_%H:%M:%S")
 
 filename = "ACU_firmware_" + time_str + ".bin"
-socket.send_string(filename)
+filename_bytes = filename.encode()
+socket.send(filename_bytes)
 
 filesize = os.path.getsize(filepath)
 print(f"Sending {filename}, size: {filesize} bytes")
@@ -33,3 +34,18 @@ with open(filepath, "rb") as f:
             break
         socket.send(chunk) 
         time.sleep(0.01) 
+
+time_wait = time.time()
+while(time.time() - time_wait < 60):
+    try:
+        ack = socket.recv(flags=zmq.NOBLOCK)
+        if ack == b'\x00':
+            print("Binary Written Successfully")
+            exit(0)
+        elif ack == b'\x01':
+            print("Binary Write Failed")
+            exit(-1)
+    except zmq.Again:
+        continue
+
+print("Did not receive ack after 60 seconds")
