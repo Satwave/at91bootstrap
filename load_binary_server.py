@@ -1,9 +1,11 @@
 import zmq
 import time
 import os
+import sys
 
 from load_binary import binaryLoad
 
+device = sys.argv[1]
 
 if __name__ == "__main__":
     context = zmq.Context()
@@ -11,7 +13,7 @@ if __name__ == "__main__":
     socket.bind("tcp://*:5001")
     time.sleep(0.1)
 
-    acu_instance = binaryLoad("/dev/ttyUSB0")
+    acu_instance = binaryLoad(device)
     bytes_read = 0
 
     while True:
